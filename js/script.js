@@ -7,18 +7,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function showTabContent(elem = 0) {
         tabsContent[elem].style.display = 'block';
+        //tabsContent[elem].classList.add('show', 'fade');
+        //tabsContent[elem].classList.remove('hide');
         tabs[elem].classList.add('tabheader__item_active');
     }
 
     function hideTabContent() {
         tabsContent.forEach(item => {
             item.style.display = 'none';
+            //item.classList.add('hide');
+            //item.classList.remove('show', 'fade');
         });
 
         tabs.forEach(element => {
             element.classList.remove('tabheader__item_active');
         });
-    
+        
+        
     }
 
     hideTabContent();
@@ -32,7 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
             tabs.forEach((element, i) => {
                 if (target == element) {
                     hideTabContent();
-                    showTabContent();
+                    showTabContent(i);
                 }
             });
         }
