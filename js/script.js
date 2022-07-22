@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //---------------------------Timer--------------------------------------
 
-const deadline = '2022-07-20';
+const deadline = '2022-07-25';
     
     function getTimeRemaining(endtime) {
         let days, hours, minutes, seconds;
@@ -103,8 +103,39 @@ const deadline = '2022-07-20';
             }
     }
 
-    
-
     setClock('.timer', deadline);
+
+//--------------------------Modal----------------------------------------
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalCloseBtn = document.querySelector('[data-close]');
+
+        modalTrigger.forEach(btn => {
+            btn.addEventListener('click', function(){
+                modal.classList.add('show');
+                modal.classList.remove('hide');
+
+                document.body.style.overflow = 'hidden';   //Для того, чтоб не прокручивался сайт барабаном мышки
+            });
+        });
+
+        function closeModal(){
+            modal.classList.remove('show');
+            modal.classList.add('hide');
+
+            document.body.style.overflow = '';
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if(e.code === "Escape" && modal.classList.contains('show')) closeModal();
+        });
+
 
 });
