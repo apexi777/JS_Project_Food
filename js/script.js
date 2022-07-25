@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 //---------------------------Timer--------------------------------------
 
-const deadline = '2022-07-25';
+const deadline = '2022-07-28';
     
     function getTimeRemaining(endtime) {
         let days, hours, minutes, seconds;
@@ -111,13 +111,16 @@ const deadline = '2022-07-25';
         modal = document.querySelector('.modal'),
         modalCloseBtn = document.querySelector('[data-close]');
 
-        modalTrigger.forEach(btn => {
-            btn.addEventListener('click', function(){
-                modal.classList.add('show');
-                modal.classList.remove('hide');
 
-                document.body.style.overflow = 'hidden';   //Для того, чтоб не прокручивался сайт барабаном мышки
-            });
+    function showModel() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+
+        document.body.style.overflow = 'hidden';   //Для того, чтоб не прокручивался сайт барабаном мышки
+    }
+
+    modalTrigger.forEach(btn => {
+            btn.addEventListener('click', showModel);
         });
 
         function closeModal(){
@@ -137,5 +140,18 @@ const deadline = '2022-07-25';
             if(e.code === "Escape" && modal.classList.contains('show')) closeModal();
         });
 
+        const timeOut = setTimeout(showModel, 5000);
+        //document.documentElement.clientHeight   - видимая часть окна, которую мы видим
+        //window.pageYOffset    - прокрученая часть
+        function showModalBySkroll () {
+            if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
+                showModel();
+                window.removeEventListener('scroll', showModalBySkroll);
+            }
+            
+        }
 
+        window.addEventListener('scroll', showModalBySkroll);
+
+ 
 });
