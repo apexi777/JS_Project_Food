@@ -108,11 +108,9 @@ const deadline = '2022-08-08';
 //--------------------------Modal----------------------------------------
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-        modal = document.querySelector('.modal'),
-        modalCloseBtn = document.querySelector('[data-close]');
+        modal = document.querySelector('.modal');
 
-
-    function showModel() {
+    function showModal() {
         modal.classList.add('show');
         modal.classList.remove('hide');
 
@@ -120,7 +118,7 @@ const deadline = '2022-08-08';
     }
 
     modalTrigger.forEach(btn => {
-            btn.addEventListener('click', showModel);
+            btn.addEventListener('click', showModal);
         });
 
         function closeModal(){
@@ -130,17 +128,15 @@ const deadline = '2022-08-08';
             document.body.style.overflow = '';
         }
 
-        modalCloseBtn.addEventListener('click', closeModal);
-
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
+            if (e.target === modal || e.target.getAttriute('data-close') == '') closeModal();
         });
 
         document.addEventListener('keydown', (e) => {
             if(e.code === "Escape" && modal.classList.contains('show')) closeModal();
         });
 
-        const timeOut = setTimeout(showModel, 5000);
+        const timeOut = setTimeout(showModel, 50000);
         //document.documentElement.clientHeight   - видимая часть окна, которую мы видим
         //window.pageYOffset    - прокрученая часть
         function showModalBySkroll () {
@@ -229,7 +225,7 @@ const deadline = '2022-08-08';
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: 'Загрузка',
+        loading: 'img/form/spinner.svg',
         success: 'Спасибо! Скоро мы с вами свяжемся',
         failure: 'Что-то пошло не так...'
     };
@@ -242,18 +238,20 @@ const deadline = '2022-08-08';
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement('div');
-            statusMessage.classList.add('status');
-            statusMessage.textContent = message.loading;
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
             form.append(statusMessage);
+            form.insertAdjacentElement('afterend', statusMessage);
 
             const request = new XMLHttpRequest();
             request.open('POST', 'server.php');
-
-            //request.setRequestHeader('Content-type', 'multipart/form-data');   - если раскоментить - данные не передаются правильно, получаем пустой обьект
+                //request.setRequestHeader('Content-type', 'multipart/form-data');   - если раскоментить - данные не передаются правильно, получаем пустой обьект
             request.setRequestHeader('Content-type', 'application/json');  //*если нужно передать данные в json
-
-            //2 формата обработки, обьект formData и JSON
+                //2 формата обработки, обьект formData и JSON
             const formData = new FormData(form);   //обязательно в HTML в form указывать атрибут name иначе не сработает input и не возьмет value
             
             const object = {};//*
@@ -262,21 +260,41 @@ const deadline = '2022-08-08';
             });
             const json = JSON.stringify(object);//*
             request.send(json);//*
-            //request.send(formData);  //*
+                //request.send(formData);  //*
             request.addEventListener('load', () => {
                 if (request.status === 200){
                     console.log(request.response);
-                    statusMessage.textContent = message.success;
+                    showThanksModal(message.success);
                     form.reset();
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    },2000);
+                    statusMessage.remove();
                 } else {
-                    statusMessage.textContent = message.failure;
+                    showThanksModal(message.failure);
                 }
             });
 
         });
+    }
+
+    function showThanksModal() {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+        prevModalDialog.classList.add('hide');
+        showModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+        <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+        </div>
+        `;
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
     }
 
 
