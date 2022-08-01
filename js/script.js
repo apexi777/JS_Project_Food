@@ -251,11 +251,18 @@ const deadline = '2022-08-08';
             request.open('POST', 'server.php');
 
             //request.setRequestHeader('Content-type', 'multipart/form-data');   - если раскоментить - данные не передаются правильно, получаем пустой обьект
-            
-            //2 формата обработки, обьект formData и JASON
-            const formData = new FormData(form);   //обязательно в HTML в form указывать атрибут name иначе не сработает input и не возьмет value
+            request.setRequestHeader('Content-type', 'application/json');  //*если нужно передать данные в json
 
-            request.send(formData);
+            //2 формата обработки, обьект formData и JSON
+            const formData = new FormData(form);   //обязательно в HTML в form указывать атрибут name иначе не сработает input и не возьмет value
+            
+            const object = {};//*
+            formData.forEach(function(value, key) {
+                object[key] = value;
+            });
+            const json = JSON.stringify(object);//*
+            request.send(json);//*
+            //request.send(formData);  //*
             request.addEventListener('load', () => {
                 if (request.status === 200){
                     console.log(request.response);
