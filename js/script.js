@@ -136,7 +136,7 @@ const deadline = '2022-08-08';
             if(e.code === "Escape" && modal.classList.contains('show')) closeModal();
         });
 
-        const timeOut = setTimeout(showModel, 50000);
+        const timeOut = setTimeout(showModal, 50000);
         //document.documentElement.clientHeight   - видимая часть окна, которую мы видим
         //window.pageYOffset    - прокрученая часть
         function showModalBySkroll () {
@@ -296,6 +296,11 @@ const deadline = '2022-08-08';
             closeModal();
         }, 4000);
     }
+
+
+    fetch('https://jsonplaceholder.typicode.com/todos/1')
+        .then(response => response.json())
+        .then(json => console.log(json));
 
 
 });
