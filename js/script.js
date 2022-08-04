@@ -190,6 +190,12 @@ const deadline = '2022-08-08';
     
     }
     
+    const getResource = async (url) => {
+        const res = await fetch(url);
+            
+        return await res.json();
+    };
+    
     new MenuCard(
         "img/tabs/vegy.jpg",
         "vegy",
@@ -231,10 +237,22 @@ const deadline = '2022-08-08';
     };
 
     forms.forEach(item => {
-        postData(item);
+        BindPostData(item);
     });
 
-    function postData(form) {
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json();
+    };
+
+    function BindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -251,10 +269,11 @@ const deadline = '2022-08-08';
             //2 формата обработки, обьект formData и JSON
             const formData = new FormData(form);   //обязательно в HTML в form указывать атрибут name иначе не сработает input и не возьмет value
             
-            const object = {};//*
-            formData.forEach(function(value, key) {
-                object[key] = value;
-            });
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
+            // const object = {};//*
+            // formData.forEach(function(value, key) {
+            //     object[key] = value;
+            // });
            // const json = ;//*
 
         //    fetch('server.php', {
@@ -262,38 +281,28 @@ const deadline = '2022-08-08';
         //         body: formData   
         //         // }
         //     })
-            fetch('server.php', {
-                method: "POST",
-                body: JSON.stringify(object),   
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(data => data.text())
-            .then(data => {
+        //-----------------------------------------------------------
+            // fetch('server.php', {
+            //     method: "POST",
+            //     body: JSON.stringify(object),   
+            //     headers: {
+            //         'Content-type': 'application/json'
+            //     }
+            // })
+            postData('http://localhost:3000/requests', json)
+            // .then(data => data.text())
+                .then(data => {
                     console.log(data);
                     showThanksModal(message.success);
                     statusMessage.remove();
-            })
-            .catch(() => {
-                showThanksModal(message.failure);
-            })
-            .finally(() => {
-                form.reset();
+                })
+                .catch(() => {
+                    showThanksModal(message.failure);
+                })
+                .finally(() => {
+                    form.reset();
+                });
             });
-
-        //     request.addEventListener('load', () => {
-        //         if (request.status === 200){
-        //             console.log(request.response);
-        //             showThanksModal(message.success);
-        //             form.reset();
-        //             statusMessage.remove();
-        //         } else {
-        //             showThanksModal(message.failure);
-        //         }
-        //     });
-
-         });
     }
 
     function showThanksModal() {
@@ -317,18 +326,7 @@ const deadline = '2022-08-08';
             closeModal();
         }, 4000);
     }
-
-    
-
-    // fetch('https://jsonplaceholder.typicode.com/posts', {
-    //     method: "POST",
-    //     body: JSON.stringify({name: 'Alex'}),
-    //     headers: {
-    //         'Content-type': 'application/json'
-    //     }
-    // })
-    //     .then(response => response.json())
-    //     .then(json => console.log(json));
-
-
+    // fetch('http://localhost:3000/menu')
+    //     .then(data => data.json())
+    //     .then(res => console.log(res))
 });
