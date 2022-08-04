@@ -141,7 +141,7 @@ const deadline = '2022-08-08';
         //window.pageYOffset    - прокрученая часть
         function showModalBySkroll () {
             if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
-                showModal();
+                showModel();
                 window.removeEventListener('scroll', showModalBySkroll);
             }
             
@@ -247,53 +247,32 @@ const deadline = '2022-08-08';
             form.append(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage);
 
-
-            //2 формата обработки, обьект formData и JSON
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+                //request.setRequestHeader('Content-type', 'multipart/form-data');   - если раскоментить - данные не передаются правильно, получаем пустой обьект
+            request.setRequestHeader('Content-type', 'application/json');  //*если нужно передать данные в json
+                //2 формата обработки, обьект formData и JSON
             const formData = new FormData(form);   //обязательно в HTML в form указывать атрибут name иначе не сработает input и не возьмет value
             
             const object = {};//*
             formData.forEach(function(value, key) {
                 object[key] = value;
             });
-           // const json = ;//*
-
-        //    fetch('server.php', {
-        //         method: "POST",
-        //         body: formData   
-        //         // }
-        //     })
-            fetch('server.php', {
-                method: "POST",
-                body: JSON.stringify(object),   
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(data => data.text())
-            .then(data => {
-                    console.log(data);
+            const json = JSON.stringify(object);//*
+            request.send(json);//*
+                //request.send(formData);  //*
+            request.addEventListener('load', () => {
+                if (request.status === 200){
+                    console.log(request.response);
                     showThanksModal(message.success);
+                    form.reset();
                     statusMessage.remove();
-            })
-            .catch(() => {
-                showThanksModal(message.failure);
-            })
-            .finally(() => {
-                form.reset();
+                } else {
+                    showThanksModal(message.failure);
+                }
             });
 
-        //     request.addEventListener('load', () => {
-        //         if (request.status === 200){
-        //             console.log(request.response);
-        //             showThanksModal(message.success);
-        //             form.reset();
-        //             statusMessage.remove();
-        //         } else {
-        //             showThanksModal(message.failure);
-        //         }
-        //     });
-
-         });
+        });
     }
 
     function showThanksModal() {
@@ -318,7 +297,6 @@ const deadline = '2022-08-08';
         }, 4000);
     }
 
-    
 
     // fetch('https://jsonplaceholder.typicode.com/posts', {
     //     method: "POST",
