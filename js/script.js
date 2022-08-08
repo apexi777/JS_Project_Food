@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', function() {
     
     // Timer
 
-    const deadline = '2022-06-11';
+    const deadline = '2022-08-24';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -94,7 +94,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     setClock('.timer', deadline);
 
-    // Modal
+    // Modal window feedback 
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal');
@@ -115,13 +115,13 @@ window.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'hidden';
         clearInterval(modalTimerId);
     }
-
+    //обработчик события по клику
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.getAttribute('data-close') == "") {
             closeModal();
         }
     });
-
+//обработчик события по нажатию на клавиатуру
     document.addEventListener('keydown', (e) => {
         if (e.code === "Escape" && modal.classList.contains('show')) { 
             closeModal();
@@ -129,15 +129,17 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
     const modalTimerId = setTimeout(openModal, 300000);
-    // Изменил значение, чтобы не отвлекало
-
+    
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
             openModal();
             window.removeEventListener('scroll', showModalByScroll);
         }
     }
+    //обработчик события по скролу на мышке
     window.addEventListener('scroll', showModalByScroll);
+
+
 
     // Используем классы для создание карточек меню
 
@@ -181,14 +183,22 @@ window.addEventListener('DOMContentLoaded', function() {
             this.parent.append(element);
         }
     }
-
-    getResource('http://localhost:3000/menu')
+    // Получаем карточки с БД
+            
+    axios.get('http://localhost:3000/menu')    
         .then(data => {
-            data.forEach(({img, altimg, title, descr, price}) => {
+            data.data.forEach(({img, altimg, title, descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
-            });
         });
-
+    });
+    //-------1 вариант----------
+    // getResource('http://localhost:3000/menu')
+    //     .then(data => {
+    //         data.forEach(({img, altimg, title, descr, price}) => {
+    //             new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+    //         });
+    //     });
+    //--------2 вариант-----------
     // getResource('http://localhost:3000/menu')
     //     .then(data => createCard(data));
 
@@ -211,6 +221,17 @@ window.addEventListener('DOMContentLoaded', function() {
     //         document.querySelector(".menu .container").append(element);
     //     });
     // }
+
+    // async function getResource(url) {
+    //     let res = await fetch(url);
+    
+    //     if (!res.ok) {
+    //         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    //     }
+    
+    //     return await res.json();
+    // }
+
 
     // Forms
 
@@ -237,15 +258,7 @@ window.addEventListener('DOMContentLoaded', function() {
         return await res.json();
     };
 
-    async function getResource(url) {
-        let res = await fetch(url);
-    
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-    
-        return await res.json();
-    }
+
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -298,4 +311,56 @@ window.addEventListener('DOMContentLoaded', function() {
             closeModal();
         }, 4000);
     }
+    //Slider
+
+    const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        total = document.querySelector('#total'),
+        current = document.querySelector('#current');
+    let slideIndex = 1;
+
+    showSlides(slideIndex);
+
+    if (slides < 10) total.textContent = `0${slides.length}`;
+    else total.textContent = slides.length;
+
+    function showSlides(n) {
+        if (n > slides.length) slideIndex = 1;
+        if (n < 1) slideIndex = slides.length;
+
+        slides.forEach(item => item.style.display = 'none');
+
+        slides[slideIndex - 1].style.display = 'block';
+
+        if (slides.length < 10) current.textContent = `0${slideIndex}`;
+        else current.textContent = slideIndex;
+    }
+
+    function plusSlides(n){
+        showSlides(slideIndex += n);
+    }
+
+    prev.addEventListener('click', () => {
+        plusSlides(-1);
+    });
+
+    next.addEventListener('click', () => {
+        plusSlides(1);
+    });
+
 });
+
+
+
+/*Создаем npm проект
+Инициализируем проект
+npm init >> получаем файл package.json
+2. npm i json-server -g (если глобально, если локально то ничего не пишем)
+    npm i json-server --save-dev    (--save-dev - зависимость для разработки)
+ >> package-lock.json & folder node_modules
+
+ на другом ПК просто запускаем npm i 
+
+ 3. npx json-server db.json     - запуск сервера
+*/

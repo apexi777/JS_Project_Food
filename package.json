@@ -16,7 +16,6 @@
     "url": "https://github.com/apexi777/Project-Food-/issues"
   },
   "homepage": "https://github.com/apexi777/Project-Food-#readme",
-  "dependencies": {},
   "devDependencies": {
     "json-server": "^0.17.0"
   }
