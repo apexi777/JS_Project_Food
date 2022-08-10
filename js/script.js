@@ -41,36 +41,45 @@ window.addEventListener('DOMContentLoaded', function() {
     
     // Timer
 
-    const deadline = '2022-08-24';
+    //---------------------------Timer--------------------------------------
 
+    const deadline = '2022-08-08';
+        
     function getTimeRemaining(endtime) {
-        const t = Date.parse(endtime) - Date.parse(new Date()),
-            days = Math.floor( (t/(1000*60*60*24)) ),
-            seconds = Math.floor( (t/1000) % 60 ),
-            minutes = Math.floor( (t/1000/60) % 60 ),
-            hours = Math.floor( (t/(1000*60*60) % 24) );
+        let days, hours, minutes, seconds;
 
+        const t = Date.parse(endtime) - Date.parse(new Date());
+            if (t <= 0) {
+                days = 0,
+                hours = 0,
+                minutes = 0,
+                seconds = 0;
+            } else {
+            days = Math.floor(t / (1000 * 60 * 60 * 24)),
+            hours = Math.floor((t / (1000 * 60 * 60) % 24)),
+            minutes = Math.floor((t / 1000 / 60) % 60),
+            seconds = Math.floor((t / 1000) % 60);
+            }
         return {
             'total': t,
-            'days': days,
-            'hours': hours,
-            'minutes': minutes,
-            'seconds': seconds
+            'days' : days,
+            'hours' : hours,
+            'minutes' : minutes,
+            'seconds' : seconds
         };
     }
 
-    function getZero(num){
-        if (num >= 0 && num < 10) { 
-            return '0' + num;
+    function getZiro(num) {
+        if (num >= 0 && num < 10){
+            return `0${num}`;
         } else {
             return num;
         }
     }
 
     function setClock(selector, endtime) {
-
         const timer = document.querySelector(selector),
-            days = timer.querySelector("#days"),
+            days = timer.querySelector('#days'),
             hours = timer.querySelector('#hours'),
             minutes = timer.querySelector('#minutes'),
             seconds = timer.querySelector('#seconds'),
@@ -78,23 +87,23 @@ window.addEventListener('DOMContentLoaded', function() {
 
         updateClock();
 
-        function updateClock() {
-            const t = getTimeRemaining(endtime);
-
-            days.innerHTML = getZero(t.days);
-            hours.innerHTML = getZero(t.hours);
-            minutes.innerHTML = getZero(t.minutes);
-            seconds.innerHTML = getZero(t.seconds);
-
-            if (t.total <= 0) {
-                clearInterval(timeInterval);
+            function updateClock() {
+                const t = getTimeRemaining(endtime);
+        
+                days.innerHTML = getZiro(t.days);
+                hours.innerHTML = getZiro(t.hours);
+                minutes.innerHTML = getZiro(t.minutes);
+                seconds.innerHTML = getZiro(t.seconds);
+        
+                if (t.total <= 0) {
+                    clearInterval(timeInterval);
+                }
             }
-        }
     }
 
     setClock('.timer', deadline);
 
-    // Modal window feedback 
+    // Modal
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
         modal = document.querySelector('.modal');
@@ -115,13 +124,13 @@ window.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'hidden';
         clearInterval(modalTimerId);
     }
-    //обработчик события по клику
+
     modal.addEventListener('click', (e) => {
         if (e.target === modal || e.target.getAttribute('data-close') == "") {
             closeModal();
         }
     });
-//обработчик события по нажатию на клавиатуру
+
     document.addEventListener('keydown', (e) => {
         if (e.code === "Escape" && modal.classList.contains('show')) { 
             closeModal();
@@ -129,17 +138,15 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
     const modalTimerId = setTimeout(openModal, 300000);
-    
+    // Изменил значение, чтобы не отвлекало
+
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
             openModal();
             window.removeEventListener('scroll', showModalByScroll);
         }
     }
-    //обработчик события по скролу на мышке
     window.addEventListener('scroll', showModalByScroll);
-
-
 
     // Используем классы для создание карточек меню
 
@@ -183,55 +190,13 @@ window.addEventListener('DOMContentLoaded', function() {
             this.parent.append(element);
         }
     }
-    // Получаем карточки с БД
-            
-    axios.get('http://localhost:3000/menu')    
+
+    getResource('http://localhost:3000/menu')
         .then(data => {
-            data.data.forEach(({img, altimg, title, descr, price}) => {
+            data.forEach(({img, altimg, title, descr, price}) => {
                 new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+            });
         });
-    });
-    //-------1 вариант----------
-    // getResource('http://localhost:3000/menu')
-    //     .then(data => {
-    //         data.forEach(({img, altimg, title, descr, price}) => {
-    //             new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
-    //         });
-    //     });
-    //--------2 вариант-----------
-    // getResource('http://localhost:3000/menu')
-    //     .then(data => createCard(data));
-
-    // function createCard(data) {
-    //     data.forEach(({img, altimg, title, descr, price}) => {
-    //         const element = document.createElement('div');
-
-    //         element.classList.add("menu__item");
-
-    //         element.innerHTML = `
-    //             <img src=${img} alt=${altimg}>
-    //             <h3 class="menu__item-subtitle">${title}</h3>
-    //             <div class="menu__item-descr">${descr}</div>
-    //             <div class="menu__item-divider"></div>
-    //             <div class="menu__item-price">
-    //                 <div class="menu__item-cost">Цена:</div>
-    //                 <div class="menu__item-total"><span>${price}</span> грн/день</div>
-    //             </div>
-    //         `;
-    //         document.querySelector(".menu .container").append(element);
-    //     });
-    // }
-
-    // async function getResource(url) {
-    //     let res = await fetch(url);
-    
-    //     if (!res.ok) {
-    //         throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    //     }
-    
-    //     return await res.json();
-    // }
-
 
     // Forms
 
@@ -258,7 +223,15 @@ window.addEventListener('DOMContentLoaded', function() {
         return await res.json();
     };
 
-
+    async function getResource(url) {
+        let res = await fetch(url);
+    
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+    
+        return await res.json();
+    }
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -311,7 +284,8 @@ window.addEventListener('DOMContentLoaded', function() {
             closeModal();
         }, 4000);
     }
-    //Slider
+
+    // Slider
 
     let offset = 0;
     let slideIndex = 1;
@@ -457,19 +431,4 @@ window.addEventListener('DOMContentLoaded', function() {
             dots[slideIndex-1].style.opacity = 1;
         });
     });
-
 });
-
-
-
-/*Создаем npm проект
-Инициализируем проект
-npm init >> получаем файл package.json
-2. npm i json-server -g (если глобально, если локально то ничего не пишем)
-    npm i json-server --save-dev    (--save-dev - зависимость для разработки)
- >> package-lock.json & folder node_modules
-
- на другом ПК просто запускаем npm i 
-
- 3. npx json-server db.json     - запуск сервера
-*/
