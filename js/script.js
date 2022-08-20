@@ -540,3 +540,15 @@ window.addEventListener('DOMContentLoaded', function() {
     getDynamicInformation('#age');
 
 });
+
+
+
+/*Создаем npm проект
+Инициализируем проект
+npm init >> получаем файл package.json
+2. npm i json-server -g (если глобально, если локально то ничего не пишем)
+    npm i json-server --save-dev    (--save-dev - зависимость для разработки)
+ >> package-lock.json & folder node_modules
+ на другом ПК просто запускаем npm i 
+ 3. npx json-server db.json     - запуск сервера
+ */
