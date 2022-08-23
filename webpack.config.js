@@ -13,5 +13,22 @@ module.exports = {
 
   devtool: "source-map",    //Технология для хранения исходников и место расположения кода
 
-  module: {}
+  module: {               //какие модуля будут использованы
+    rules: [              //правила
+      {
+        test: /\.m?js$/,                                        // Регулярное выражение
+        exclude: /(node_modules|bower_components)/,             //Файлы которые исключаем с этой выборки
+        use: {                                                    //как и что будем использовать
+          loader: 'babel-loader',
+          options: {
+            presets: [['@babel/preset-env', {
+                debug: true,
+                corejs: 3,
+                useBuiltIns: "usage"
+            }]]
+          }
+        }
+      }
+    ]
+  }
 };

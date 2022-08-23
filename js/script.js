@@ -39,4 +39,5 @@ npm init >> получаем файл package.json
  на другом ПК просто запускаем npm i 
  3. npx json-server db.json     - запуск сервера
     npx webpack
+4. Установка bables (ES5) npm install --save-dev @babel/core @babel/cli @babel/preset-env
  */
