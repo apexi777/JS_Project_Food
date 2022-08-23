@@ -7,4 +7,5 @@ npm init >> получаем файл package.json
  >> package-lock.json & folder node_modules
  на другом ПК просто запускаем npm i 
  3. npx json-server db.json     - запуск сервера
+    npx webpack
  */

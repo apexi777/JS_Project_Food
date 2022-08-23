@@ -1,6 +1,5 @@
+import {getResource} from '../services/services';
 function cards() {
-    // Используем классы для создание карточек меню
-
     class MenuCard {
         constructor(src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
@@ -50,4 +49,4 @@ function cards() {
         });
 }
 
-module.exports = cards;
+export default cards;
