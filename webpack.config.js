@@ -19,12 +19,12 @@ module.exports = {
         test: /\.m?js$/,                                        // Регулярное выражение
         exclude: /(node_modules|bower_components)/,             //Файлы которые исключаем с этой выборки
         use: {                                                    //как и что будем использовать
-          loader: 'babel-loader',
+          loader: 'babel-loader',                                 //Связует webpack c babels   npm i --save-dev babel-loader
           options: {
-            presets: [['@babel/preset-env', {
-                debug: true,
-                corejs: 3,
-                useBuiltIns: "usage"
+            presets: [['@babel/preset-env', {         //Распостранённый пресет bables
+                debug: true,                                //Для отображения полной информации указываем true
+                corejs: 3,          //Для подключения всех возможных полифилов   npm i --save-dev core-js
+                useBuiltIns: "usage"     //Выбирает только те полифилы которые нужны
             }]]
           }
         }

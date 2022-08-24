@@ -1,3 +1,9 @@
+//npm install es6-promise
+require('es6-promise').polyfill();
+//foreach полифил (если foreach не сработал) npm i nodelist-foreach-polyfill
+import 'nodelist-foreach-polyfill';
+
+
 import tabs from './modules/tabs';
 import modal from './modules/modal';
 import timer from './modules/timer';
@@ -40,4 +46,13 @@ npm init >> получаем файл package.json
  3. npx json-server db.json     - запуск сервера
     npx webpack
 4. Установка bables (ES5) npm install --save-dev @babel/core @babel/cli @babel/preset-env
+5. В файле webpack указан данный модуль 
+npm i --save-dev babel-loader
+
+npm i --save-dev core-js
+
+Дополнительний полифил для ES6
+npm install es6-promise
+foreach полифил
+npm i nodelist-foreach-polyfill
  */
